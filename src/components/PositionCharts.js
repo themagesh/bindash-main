@@ -59,7 +59,7 @@ function AdvancedChart({ symbol, interval = '240' }) {
   }, [symbol, interval]);
 
   return (
-    <div ref={containerRef} className="h-full w-full" />
+    <div ref={containerRef} className="h-full w-full rounded-xl overflow-hidden bg-[#181a20]" />
   );
 }
 
@@ -70,27 +70,26 @@ export default function PositionCharts({ positions = [] }) {
     return null;
   }
 
-  // Get unique symbols from positions
   const symbols = [...new Set(positions.map(p => p.symbol))];
   const currentLabel = timeIntervals.find(t => t.value === selectedInterval)?.label || '15m';
 
   return (
-    <section className="mb-4 md:mb-8">
-      <div className="flex items-center justify-between mb-3 md:mb-4">
-        <h2 className="text-lg md:text-xl font-semibold text-white">
-          Position Charts
-        </h2>
-        
-        {/* Time Interval Switcher */}
-        <div className="flex items-center gap-1 bg-gray-800/50 rounded-lg p-1 border border-gray-700">
+    <section className="mb-4 md:mb-8 p-3 md:p-4 bg-[#181a20] rounded-2xl border border-gray-800 shadow-[0_0_0_1px_rgba(148,163,184,0.08)]">
+      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between mb-4">
+        <div>
+          <p className="text-xs uppercase tracking-[0.18em] text-[#fcd535] font-semibold">Market View</p>
+          <h2 className="text-lg md:text-xl font-semibold text-white mt-1">Position Charts</h2>
+        </div>
+
+        <div className="flex items-center gap-1 bg-[#23262f] rounded-xl p-1 border border-gray-700 shadow-inner">
           {timeIntervals.map((tf) => (
             <button
               key={tf.value}
               onClick={() => setSelectedInterval(tf.value)}
-              className={`px-2 py-1 text-xs font-medium rounded transition-all ${
+              className={`px-2.5 py-1.5 text-[11px] md:text-xs font-semibold rounded-lg transition-all ${
                 selectedInterval === tf.value
-                  ? 'bg-blue-600 text-white'
-                  : 'text-gray-400 hover:text-white hover:bg-gray-700/50'
+                  ? 'bg-[#fcd535] text-[#181a20] shadow-md'
+                  : 'text-gray-400 hover:text-white hover:bg-gray-700/60'
               }`}
             >
               {tf.label}
@@ -98,18 +97,21 @@ export default function PositionCharts({ positions = [] }) {
           ))}
         </div>
       </div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {symbols.map((symbol) => (
-          <div 
+          <div
             key={`${symbol}-${selectedInterval}`}
-            className="bg-gray-800/50 rounded-xl border border-gray-700 overflow-hidden"
+            className="overflow-hidden rounded-2xl border border-gray-700 bg-[#23262f] shadow-[0_18px_45px_rgba(0,0,0,0.22)]"
           >
-            <div className="bg-gray-700/50 px-3 py-2 border-b border-gray-700 flex items-center justify-between">
-              <span className="text-sm font-medium text-white">{symbol.replace('USDT', '')}</span>
-              <span className="text-xs text-gray-400">{currentLabel}</span>
+            <div className="flex items-center justify-between px-3 py-2.5 border-b border-gray-700 bg-[#20242d]">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#00d4ff] shadow-[0_0_16px_rgba(0,221,255,0.8)]" />
+                <span className="text-sm font-semibold text-white">{symbol.replace('USDT', '')}</span>
+              </div>
+              <span className="text-[11px] font-medium text-[#fcd535] uppercase tracking-wide">{currentLabel}</span>
             </div>
-            <div className="h-[400px]">
+            <div className="h-[330px] md:h-[360px]">
               <AdvancedChart symbol={`${symbol}.p`} interval={selectedInterval} />
             </div>
           </div>
