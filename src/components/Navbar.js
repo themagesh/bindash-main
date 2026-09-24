@@ -65,7 +65,7 @@ export default function Navbar({ onRefresh, loading, progressData }) {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                 </svg>
               </div>
-              <span className="text-white font-bold block text-[15px] sm:text-base">Bala Dashboard</span>
+              <span className="text-white font-bold block text-[15px] sm:text-base">Hema Dashboard</span>
             </Link>
             
             {/* Desktop Nav */}

@@ -19,11 +19,10 @@ export default function TradesPage() {
     });
   };
 
-  // Filter trades from 1st to end of current month
+  // Filter trades from the last 24 hours
   const now = new Date();
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0).getTime();
-  const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999).getTime();
-  const recentTrades = trades?.filter(t => t.timestamp >= startOfMonth && t.timestamp <= endOfMonth) || [];
+  const startOfDay = now.getTime() - (24 * 60 * 60 * 1000);
+  const recentTrades = trades?.filter(t => t.timestamp >= startOfDay) || [];
 
   // Group losses by symbol (cumulative)
   const lossesBySymbol = recentTrades
@@ -86,9 +85,9 @@ export default function TradesPage() {
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-2xl md:text-3xl font-bold text-white">
-          Monthly PnL by Coin
+          1-Day PnL by Coin
         </h1>
-        <p className="text-gray-400 mt-1">Current month - Cumulative per symbol</p>
+        <p className="text-gray-400 mt-1">Last 24 hours - cumulative per symbol</p>
       </div>
 
       {/* Stats Cards */}
@@ -170,13 +169,13 @@ export default function TradesPage() {
         <div className="bg-gray-800/50 rounded-xl border border-gray-700 overflow-hidden">
           <div className="p-4 border-b border-gray-700">
             <h2 className="text-lg font-semibold text-white">
-              {activeTab === 'losses' ? '📉 Losses' : '📈 Profits'} by Coin (This Month)
+              {activeTab === 'losses' ? '📉 Losses' : '📈 Profits'} by Coin (Last 24h)
             </h2>
           </div>
 
           {currentArray.length === 0 ? (
             <div className="p-8 text-center text-gray-500">
-              {activeTab === 'losses' ? 'No losses in the last 30 days 🎉' : 'No profits in the last 30 days'}
+              {activeTab === 'losses' ? 'No losses in the last 24 hours 🎉' : 'No profits in the last 24 hours'}
             </div>
           ) : (
             <>
@@ -242,7 +241,7 @@ export default function TradesPage() {
       {/* Footer */}
       <div className="mt-6 text-center text-gray-500 text-sm">
         <p>
-          Showing cumulative {activeTab} per coin for current month
+          Showing cumulative {activeTab} per coin for the last 24 hours
         </p>
       </div>
     </div>

@@ -12,7 +12,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Bala Dashboard",
+  title: "Hema Dashboard",
   description: "Portfolio risk management dashboard for Binance",
   icons: {
     icon: "/icon.png",

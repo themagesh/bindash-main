@@ -194,7 +194,7 @@ export default function FuturesPage() {
       />
 
       <footer className="text-center text-gray-500 text-xs md:text-sm py-4">
-        <p>Bala</p>
+        <p>Hema</p>
       </footer>
     </div>
   );

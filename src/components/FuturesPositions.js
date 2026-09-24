@@ -7,8 +7,26 @@ import { formatCurrency, formatCurrencyFull, formatPercent, getChangeColor } fro
 // Accept pendingOrders prop
 export default function FuturesPositions({ positions, onRefresh, pendingOrders = [] }) {
   const [closing, setClosing] = useState(null);
+  const [lockedTrades, setLockedTrades] = useState(() => new Set());
+
+  const toggleTradeLock = (symbol) => {
+    setLockedTrades((prev) => {
+      const next = new Set(prev);
+      if (next.has(symbol)) {
+        next.delete(symbol);
+      } else {
+        next.add(symbol);
+      }
+      return next;
+    });
+  };
 
   const handleForceClose = async (position) => {
+    if (lockedTrades.has(position.symbol)) {
+      alert(`Trade lock is active for ${position.symbol}. Unlock it before closing the position.`);
+      return;
+    }
+
     if (!confirm(`Are you sure you want to force close ${position.symbol} ${position.side} position?`)) {
       return;
     }
@@ -130,112 +148,134 @@ export default function FuturesPositions({ positions, onRefresh, pendingOrders =
     <>
       {/* Mobile Card View */}
       <div className="block md:hidden space-y-4">
-        {sortedPositions.map((position, index) => (
-          <div 
-            key={`mobile-${position.symbol}-${index}`}
-            className="bg-gray-800 rounded-lg p-4 border border-gray-700"
-          >
-            <div className="flex justify-between items-start mb-3">
-              <div className="flex items-center gap-2">
-                <div className={`w-2 h-2 rounded-full ${position.side === 'LONG' ? 'bg-green-500' : 'bg-red-500'}`} />
-                <span className="font-medium text-white text-lg">{position.symbol}</span>
-                <span className={`px-2 py-0.5 rounded text-xs font-semibold ${
-                  position.side === 'LONG' 
-                    ? 'bg-green-500/20 text-green-400' 
-                    : 'bg-red-500/20 text-red-400'
-                }`}>
-                  {position.side}
-                </span>
-                <span className={`px-2 py-0.5 rounded text-xs font-semibold ${
-                  position.leverage >= 20 ? 'bg-red-500/20 text-red-400' :
-                  position.leverage >= 10 ? 'bg-yellow-500/20 text-yellow-400' :
-                  'bg-blue-500/20 text-blue-400'
-                }`}>
-                  {position.leverage}x
-                </span>
+        {sortedPositions.map((position, index) => {
+          const isLocked = lockedTrades.has(position.symbol);
+
+          return (
+            <div 
+              key={`mobile-${position.symbol}-${index}`}
+              className="bg-gray-800 rounded-lg p-4 border border-gray-700"
+            >
+              <div className="flex justify-between items-start mb-3">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <div className={`w-2 h-2 rounded-full ${position.side === 'LONG' ? 'bg-green-500' : 'bg-red-500'}`} />
+                  <span className="font-medium text-white text-lg">{position.symbol}</span>
+                  <span className={`px-2 py-0.5 rounded text-xs font-semibold ${
+                    position.side === 'LONG' 
+                      ? 'bg-green-500/20 text-green-400' 
+                      : 'bg-red-500/20 text-red-400'
+                  }`}>
+                    {position.side}
+                  </span>
+                  <span className={`px-2 py-0.5 rounded text-xs font-semibold ${
+                    position.leverage >= 20 ? 'bg-red-500/20 text-red-400' :
+                    position.leverage >= 10 ? 'bg-yellow-500/20 text-yellow-400' :
+                    'bg-blue-500/20 text-blue-400'
+                  }`}>
+                    {position.leverage}x
+                  </span>
+                  {isLocked && (
+                    <span className="px-2 py-0.5 rounded text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                      Locked
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => toggleTradeLock(position.symbol)}
+                    className={`px-2 py-1 rounded text-[10px] font-semibold border transition-colors ${
+                      isLocked
+                        ? 'bg-amber-500/20 border-amber-500/40 text-amber-300'
+                        : 'bg-gray-700 border-gray-600 text-gray-200 hover:bg-gray-600'
+                    }`}
+                    title={isLocked ? 'Unlock trade' : 'Lock trade'}
+                  >
+                    {isLocked ? 'Unlock' : 'Lock'}
+                  </button>
+                  <button
+                    onClick={() => handleForceClose(position)}
+                    disabled={closing === position.symbol || isLocked}
+                    className="p-1.5 bg-red-600 hover:bg-red-700 disabled:bg-gray-600 text-white rounded transition-colors"
+                    title={isLocked ? 'Trade locked' : 'Force Close'}
+                  >
+                    {closing === position.symbol ? (
+                      <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                    ) : (
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    )}
+                  </button>
+                </div>
               </div>
-              <button
-                onClick={() => handleForceClose(position)}
-                disabled={closing === position.symbol}
-                className="p-1.5 bg-red-600 hover:bg-red-700 disabled:bg-gray-600 text-white rounded transition-colors"
-                title="Force Close"
-              >
-                {closing === position.symbol ? (
-                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                ) : (
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                )}
-              </button>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-3 text-sm">
-              <div>
-                <span className="text-gray-400">Size</span>
-                <p className="text-white">{position.positionAmt}</p>
-              </div>
-              <div>
-                <span className="text-gray-400">Entry</span>
-                <p className="text-white">
-                  {formatCurrencyFull(position.entryPrice)}
-                  <span className="text-xs text-blue-400 ml-2">(
-                    ${Math.round(Math.abs(position.positionAmt * position.entryPrice)).toLocaleString('en-US')}
-                  )</span>
-                </p>
-              </div>
-              <div>
-                <span className="text-gray-400">Target</span>
-                {position.takeProfitPrice ? (
-                  <p className="text-green-400">
-                    {formatCurrencyFull(position.takeProfitPrice)}
-                    <span className="text-green-400 text-xs ml-1">({formatCurrencyFull(position.takeProfitValue)})</span>
+
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div>
+                  <span className="text-gray-400">Size</span>
+                  <p className="text-white">{position.positionAmt}</p>
+                </div>
+                <div>
+                  <span className="text-gray-400">Entry</span>
+                  <p className="text-white">
+                    {formatCurrencyFull(position.entryPrice)}
+                    <span className="text-xs text-blue-400 ml-2">(
+                      ${Math.round(Math.abs(position.positionAmt * position.entryPrice)).toLocaleString('en-US')}
+                    )</span>
                   </p>
-                ) : (
-                  <p className="text-gray-500">No Target</p>
-                )}
-              </div>
-              <div>
-                <span className="text-gray-400">Mark</span>
-                <p className="text-white">{formatCurrencyFull(position.markPrice)}</p>
-              </div>
-              <div>
-                <span className="text-gray-400">PnL</span>
-                <p className={`font-medium ${getChangeColor(position.unrealizedProfit)}`}>
-                  {formatCurrency(Number(position.unrealizedProfit).toFixed(2), 2)} ({formatPercent(Number(position.roe).toFixed(2), 2)})
-                </p>
-              </div>
-              <div>
-                <span className="text-gray-400">Stop Loss</span>
-                {position.stopLossPrice ? (
-                    <p className={
-                      position.stopLossPrice > position.entryPrice
-                        ? "text-green-400"
-                        : "text-yellow-400"
-                    }>
-                      {formatCurrencyFull(position.stopLossPrice)}
-                      <span className={
-                        position.stopLossPrice > position.entryPrice
-                          ? "text-green-400 text-xs ml-1"
-                          : "text-red-400 text-xs ml-1"
-                      }>
-                        ({formatCurrencyFull(Math.abs(position.stopLossValue))})
-                      </span>
+                </div>
+                <div>
+                  <span className="text-gray-400">Target</span>
+                  {position.takeProfitPrice ? (
+                    <p className="text-green-400">
+                      {formatCurrencyFull(position.takeProfitPrice)}
+                      <span className="text-green-400 text-xs ml-1">({formatCurrencyFull(position.takeProfitValue)})</span>
                     </p>
                   ) : (
-                    <p className="text-gray-500">No SL</p>
+                    <p className="text-gray-500">No Target</p>
                   )}
-              </div>
-              <div>
-                <span className="text-gray-400">Liq. Price</span>
-                <p className="text-orange-400">{formatCurrencyFull(position.liquidationPrice)}</p>
+                </div>
+                <div>
+                  <span className="text-gray-400">Mark</span>
+                  <p className="text-white">{formatCurrencyFull(position.markPrice)}</p>
+                </div>
+                <div>
+                  <span className="text-gray-400">PnL</span>
+                  <p className={`font-medium ${getChangeColor(position.unrealizedProfit)}`}>
+                    {formatCurrency(Number(position.unrealizedProfit).toFixed(2), 2)} ({formatPercent(Number(position.roe).toFixed(2), 2)})
+                  </p>
+                </div>
+                <div>
+                  <span className="text-gray-400">Stop Loss</span>
+                  {position.stopLossPrice ? (
+                      <p className={
+                        position.stopLossPrice > position.entryPrice
+                          ? "text-green-400"
+                          : "text-yellow-400"
+                      }>
+                        {formatCurrencyFull(position.stopLossPrice)}
+                        <span className={
+                          position.stopLossPrice > position.entryPrice
+                            ? "text-green-400 text-xs ml-1"
+                            : "text-red-400 text-xs ml-1"
+                        }>
+                          ({formatCurrencyFull(Math.abs(position.stopLossValue))})
+                        </span>
+                      </p>
+                    ) : (
+                      <p className="text-gray-500">No SL</p>
+                    )}
+                </div>
+                <div>
+                  <span className="text-gray-400">Liq. Price</span>
+                  <p className="text-orange-400">{formatCurrencyFull(position.liquidationPrice)}</p>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Desktop Table View */}
@@ -343,23 +383,36 @@ export default function FuturesPositions({ positions, onRefresh, pendingOrders =
                   })()}
                 </td>
                 <td className="py-4 px-2 text-center">
-                  <button
-                    onClick={() => handleForceClose(position)}
-                    disabled={closing === position.symbol}
-                    className="p-0.4 bg-gray-200 hover:bg-gray-300 disabled:bg-gray-400 text-blue-800 rounded transition-colors border border-gray-400"
-                    title="Force Close"
-                  >
-                    {closing === position.symbol ? (
-                      <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                    ) : (
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    )}
-                  </button>
+                  <div className="flex items-center justify-center gap-2">
+                    <button
+                      onClick={() => toggleTradeLock(position.symbol)}
+                      className={`px-2 py-1 rounded text-[10px] font-semibold border transition-colors ${
+                        lockedTrades.has(position.symbol)
+                          ? 'bg-amber-500/20 border-amber-500/40 text-amber-300'
+                          : 'bg-gray-700 border-gray-600 text-gray-200 hover:bg-gray-600'
+                      }`}
+                      title={lockedTrades.has(position.symbol) ? 'Unlock trade' : 'Lock trade'}
+                    >
+                      {lockedTrades.has(position.symbol) ? 'Unlock' : 'Lock'}
+                    </button>
+                    <button
+                      onClick={() => handleForceClose(position)}
+                      disabled={closing === position.symbol || lockedTrades.has(position.symbol)}
+                      className="p-0.4 bg-gray-200 hover:bg-gray-300 disabled:bg-gray-400 text-blue-800 rounded transition-colors border border-gray-400"
+                      title={lockedTrades.has(position.symbol) ? 'Trade locked' : 'Force Close'}
+                    >
+                      {closing === position.symbol ? (
+                        <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                      ) : (
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      )}
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}

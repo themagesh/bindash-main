@@ -66,7 +66,7 @@ export default function PortfolioHeader({ totalValue, futuresAccount, lastUpdate
                 </svg>
               </div>
               <div>
-                <h1 className="text-lg md:text-2xl font-bold text-white">Bala Dashboard</h1>
+                <h1 className="text-lg md:text-2xl font-bold text-white">Hema Dashboard</h1>
                 <p className="text-gray-500 text-xs md:text-sm flex items-center gap-1">
                   <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
                   {lastUpdated ? `Updated ${new Date(lastUpdated).toLocaleTimeString()}` : 'Live'}
