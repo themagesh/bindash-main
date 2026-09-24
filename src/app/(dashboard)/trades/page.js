@@ -5,6 +5,7 @@ import { useFetch, formatCurrency } from '@/lib/utils';
 
 export default function TradesPage() {
   const [activeTab, setActiveTab] = useState('profits');
+  const [period, setPeriod] = useState('day');
   
   // Fetch last 1000 trades to cover ~1 month
   const { data: trades, loading, error, refetch } = useFetch('/api/trades?type=pnl&limit=1000', { refreshInterval: 10000 });
@@ -19,10 +20,16 @@ export default function TradesPage() {
     });
   };
 
-  // Filter trades from the last 24 hours
+  const periods = {
+    day: { label: '1 Day', description: 'Last 24 hours', duration: 24 * 60 * 60 * 1000 },
+    week: { label: '1 Week', description: 'Last 7 days', duration: 7 * 24 * 60 * 60 * 1000 },
+    month: { label: '1 Month', description: 'Last 30 days', duration: 30 * 24 * 60 * 60 * 1000 },
+  };
+
+  const selectedPeriod = periods[period];
   const now = new Date();
-  const startOfDay = now.getTime() - (24 * 60 * 60 * 1000);
-  const recentTrades = trades?.filter(t => t.timestamp >= startOfDay) || [];
+  const periodStart = now.getTime() - selectedPeriod.duration;
+  const recentTrades = trades?.filter(t => t.timestamp >= periodStart) || [];
 
   // Group losses by symbol (cumulative)
   const lossesBySymbol = recentTrades
@@ -85,9 +92,26 @@ export default function TradesPage() {
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-2xl md:text-3xl font-bold text-white">
-          1-Day PnL by Coin
+          {selectedPeriod.label} PnL by Coin
         </h1>
-        <p className="text-gray-400 mt-1">Last 24 hours - cumulative per symbol</p>
+        <p className="text-gray-400 mt-1">{selectedPeriod.description} - cumulative per symbol</p>
+      </div>
+
+      {/* History Period */}
+      <div className="flex gap-2 mb-6 rounded-xl border border-gray-700 bg-gray-800/50 p-1">
+        {Object.entries(periods).map(([value, option]) => (
+          <button
+            key={value}
+            onClick={() => setPeriod(value)}
+            className={`flex-1 rounded-lg px-3 py-2 text-sm font-medium transition-all ${
+              period === value
+                ? 'bg-[#fcd535] text-gray-900 shadow-md'
+                : 'text-gray-400 hover:bg-gray-700/60 hover:text-white'
+            }`}
+          >
+            {option.label}
+          </button>
+        ))}
       </div>
 
       {/* Stats Cards */}
@@ -169,13 +193,13 @@ export default function TradesPage() {
         <div className="bg-gray-800/50 rounded-xl border border-gray-700 overflow-hidden">
           <div className="p-4 border-b border-gray-700">
             <h2 className="text-lg font-semibold text-white">
-              {activeTab === 'losses' ? '📉 Losses' : '📈 Profits'} by Coin (Last 24h)
+              {activeTab === 'losses' ? '📉 Losses' : '📈 Profits'} by Coin ({selectedPeriod.description})
             </h2>
           </div>
 
           {currentArray.length === 0 ? (
             <div className="p-8 text-center text-gray-500">
-              {activeTab === 'losses' ? 'No losses in the last 24 hours 🎉' : 'No profits in the last 24 hours'}
+              {activeTab === 'losses' ? `No losses in the ${selectedPeriod.description.toLowerCase()} 🎉` : `No profits in the ${selectedPeriod.description.toLowerCase()}`}
             </div>
           ) : (
             <>
