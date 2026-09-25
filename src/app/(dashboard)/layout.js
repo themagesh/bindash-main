@@ -2,6 +2,23 @@
 
 import { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
+import { ThemeProvider, useTheme } from '@/components/ThemeContext';
+
+function DashboardShell({ children, progressData }) {
+  const { darkMode } = useTheme();
+
+  return (
+    <div className={`dashboard-shell min-h-screen ${darkMode ? 'app dark' : ''}`}>
+      <div className="app nav-shell">
+        <div className="paper-noise" />
+        <Navbar progressData={progressData} />
+      </div>
+      <main className="relative z-10">
+        {children}
+      </main>
+    </div>
+  );
+}
 
 export default function DashboardLayout({ children }) {
   const [progressData, setProgressData] = useState(null);
@@ -77,12 +94,8 @@ export default function DashboardLayout({ children }) {
   }, []);
 
   return (
-    <div className="dashboard-shell min-h-screen">
-      <Navbar progressData={progressData} />
-
-      <main className="relative z-10">
-        {children}
-      </main>
-    </div>
+    <ThemeProvider>
+      <DashboardShell progressData={progressData}>{children}</DashboardShell>
+    </ThemeProvider>
   );
 }
