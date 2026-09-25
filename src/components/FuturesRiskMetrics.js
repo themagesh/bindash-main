@@ -91,8 +91,8 @@ function RSIGauge({ symbol, interval, label }) {
   const svgH = size / 2 + 12;
 
   return (
-    <div className="bg-gray-800/50 rounded-xl p-3 border border-gray-700 flex flex-col items-center">
-      <p className="text-gray-400 text-xs mb-1">BTC RSI {label}</p>
+    <div className="metric-card flex flex-col items-center justify-center" style={{ background: 'linear-gradient(135deg, #fce9f5 0%, #f7d5e8 100%)' }}>
+      <p className="mb-1 text-[0.68rem] font-black uppercase tracking-[0.14em] text-[#68425d]">BTC RSI {label}</p>
       <svg width={size} height={svgH} viewBox={`0 0 ${size} ${svgH}`}>
         {/* Background track */}
         <path d={arcPath(ARC_START, ARC_END)} fill="none" stroke={trackColor} strokeWidth={strokeWidth} strokeLinecap="round" />
@@ -173,30 +173,33 @@ export default function FuturesRiskMetrics({ metrics, account, positions }) {
   };
 
   const metricCards = [
-    // Target achievement card
     ...(targetAchieved ? [{
       label: '🎯 Target Achieved',
       value: formatCurrency(Math.round(finalValue), 0),
       subValue: `Final Value`,
       color: 'text-green-500',
+      background: 'linear-gradient(135deg, #cfeecb 0%, #b8e8c1 100%)',
     }] : []),
     {
       label: 'Unrealized PnL',
       value: formatCurrency(Math.round(parseFloat(metrics.totalPnL)), 0),
       subValue: `${Math.round(metrics.totalPnLPercent)}%`,
-      color: parseFloat(metrics.totalPnL) >= 0 ? 'text-green-500' : 'text-red-500',
+      color: parseFloat(metrics.totalPnL) >= 0 ? 'text-green-600' : 'text-red-500',
+      background: parseFloat(metrics.totalPnL) >= 0 ? 'linear-gradient(135deg, #dff8d6 0%, #bdeec7 100%)' : 'linear-gradient(135deg, #f6d3d7 0%, #f0b1bd 100%)',
     },
     {
       label: 'Wallet Balance',
       value: formatCurrency(Math.round(account?.totalWalletBalance || 0), 0),
       subValue: `Available: ${formatCurrency(Math.round(account?.availableBalance || 0), 0)}`,
-      color: 'text-blue-500',
+      color: 'text-blue-700',
+      background: 'linear-gradient(135deg, #d7f0ff 0%, #bfe6ff 100%)',
     },
     {
       label: 'If All SL Hit',
       value: formatCurrency(Math.round(balanceAfterSL), 0),
       subValue: `Loss: ${formatCurrency(Math.round(totalStopLossValue), 0)}`,
-      color: balanceAfterSL > 0 ? 'text-yellow-500' : 'text-red-500',
+      color: balanceAfterSL > 0 ? 'text-yellow-700' : 'text-red-500',
+      background: 'linear-gradient(135deg, #f7e6af 0%, #f7d58d 100%)',
     },
     {
       label: 'Maint. Margin',
@@ -207,38 +210,46 @@ export default function FuturesRiskMetrics({ metrics, account, positions }) {
       color: account?.totalMaintMargin / account?.totalMarginBalance > 0.5
         ? 'text-red-500'
         : account?.totalMaintMargin / account?.totalMarginBalance > 0.25
-          ? 'text-yellow-500'
-          : 'text-green-500',
+          ? 'text-yellow-600'
+          : 'text-green-600',
+      background: 'linear-gradient(135deg, #dfe7ff 0%, #cce1ff 100%)',
     },
     {
       label: 'Open Positions',
       value: Math.round(metrics.positionCount),
       subValue: `USDT: ${formatCurrency(Math.round(parseFloat(metrics.totalNotional)), 0)}`,
-      color: 'text-purple-500',
+      color: 'text-purple-700',
+      background: 'linear-gradient(135deg, #ead9ff 0%, #d8c5ff 100%)',
     },
     {
       label: 'Long',
       value: formatCurrency(Math.round(parseFloat(metrics.longExposure)), 0),
       subValue: 'USDT Long',
-      color: 'text-green-500',
+      color: 'text-green-700',
+      background: 'linear-gradient(135deg, #dff8ee 0%, #c2f5df 100%)',
     },
     {
       label: 'Short',
       value: formatCurrency(Math.round(parseFloat(metrics.shortExposure)), 0),
       subValue: 'USDT Short',
       color: 'text-red-500',
+      background: 'linear-gradient(135deg, #f7dfe8 0%, #f5c4d8 100%)',
     },
   ];
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-9 gap-3 md:gap-4">
       {metricCards.map((metric, index) => (
-        <div key={index} className="bg-gray-800/50 rounded-xl p-3 md:p-4 border border-gray-700">
-          <p className="text-gray-400 text-xs mb-1">{metric.label}</p>
-          <p className={`text-base md:text-lg font-bold ${metric.isRisk ? getRiskColor(metric.value).split(' ')[0] : metric.color}`}>
+        <div
+          key={index}
+          className="metric-card"
+          style={{ background: metric.background }}
+        >
+          <p className="mb-2 text-[0.68rem] font-black uppercase tracking-[0.14em] text-[#5c4f7d]">{metric.label}</p>
+          <p className={`text-base md:text-lg font-black ${metric.color}`}>
             {metric.value}
           </p>
-          <p className="text-gray-500 text-xs mt-1 truncate">{metric.subValue}</p>
+          <p className="mt-2 text-[0.72rem] font-semibold text-[#675b71] truncate">{metric.subValue}</p>
         </div>
       ))}
       <RSIGauge symbol="BTCUSDT" interval="1h" label="1H" />

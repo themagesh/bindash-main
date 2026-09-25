@@ -150,64 +150,54 @@ export default function GoalModal({ isOpen, onClose, futuresAccount }) {
           </div>
 
           {/* Content */}
-          <div className="p-4 md:p-6">
+          <div className="p-4 md:p-5">
             {loading ? (
               <div className="flex justify-center py-8">
                 <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
               </div>
             ) : currentMilestone ? (
               <div className="space-y-4">
-                {/* Progress indicator */}
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="flex-1 h-2 bg-gray-700 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-gradient-to-r from-blue-500 to-green-500 rounded-full transition-all"
-                      style={{ width: `${(completedTrades.length / (completedTrades.length + 1)) * 100}%` }}
-                    />
-                  </div>
-                  <span className="text-xs text-gray-400 font-mono">#{currentMilestone.trade}</span>
+                <div className="flex items-center justify-center pb-1">
+                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#4c7dff] text-sm font-black text-white shadow-lg shadow-blue-500/25">
+                    {currentMilestone.trade}
+                  </span>
                 </div>
 
-                {/* Current Trade Card */}
-                <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-xl p-5 border border-blue-500/40">
-                  <h3 className="text-base font-semibold text-white mb-4 flex items-center gap-2">
-                    <span className="w-7 h-7 rounded-full bg-blue-500 flex items-center justify-center text-xs font-bold text-white">
-                      {currentMilestone.trade}
-                    </span>
+                <div className="rounded-2xl border border-[#4f7ef0]/60 bg-gradient-to-br from-[#1f2d4e] via-[#1d2540] to-[#1e243d] p-5 shadow-inner shadow-blue-900/20">
+                  <h3 className="mb-5 text-center text-3xl font-black tracking-[-0.05em] text-white">
                     Trade #{currentMilestone.trade}
                   </h3>
 
-                  <div className="grid grid-cols-3 gap-4 mb-4">
-                    <div className="bg-gray-800/60 rounded-lg p-3">
-                      <p className="text-gray-400 text-xs mb-1">Start</p>
-                      <p className="text-white font-bold text-sm">
+                  <div className="grid grid-cols-3 gap-3 mb-4">
+                    <div className="rounded-xl bg-[#17243b]/80 px-2 py-3 text-center">
+                      <p className="text-[0.7rem] font-medium text-slate-300">Start</p>
+                      <p className="mt-2 text-sm font-black text-white">
                         {formatCurrency(currentMilestone.startBalance)}
                       </p>
                     </div>
-                    <div className="bg-gray-800/60 rounded-lg p-3">
-                      <p className="text-gray-400 text-xs mb-1">Target Profit</p>
-                      <p className="text-green-400 font-bold text-sm">
+                    <div className="rounded-xl bg-[#17243b]/80 px-2 py-3 text-center">
+                      <p className="text-[0.7rem] font-medium text-slate-300">Target Profit</p>
+                      <p className="mt-2 text-sm font-black text-[#4ef2a6]">
                         +{formatCurrency(currentMilestone.profit)}
                       </p>
                     </div>
-                    <div className="bg-gray-800/60 rounded-lg p-3">
-                      <p className="text-gray-400 text-xs mb-1">End Balance</p>
-                      <p className="text-blue-400 font-bold text-sm">
+                    <div className="rounded-xl bg-[#17243b]/80 px-2 py-3 text-center">
+                      <p className="text-[0.7rem] font-medium text-slate-300">End Balance</p>
+                      <p className="mt-2 text-sm font-black text-[#5db5ff]">
                         {formatCurrency(currentMilestone.endBalance)}
                       </p>
                     </div>
                   </div>
 
-                  {/* Achievement Goal */}
-                  <div className="flex items-center justify-between bg-gray-800/40 rounded-lg px-3 py-2 mb-4">
-                    <span className="text-gray-400 text-xs">Need to earn</span>
-                    <span className="text-green-400 font-bold text-base">+{formatCurrency(currentMilestone.profit)}</span>
+                  <div className="mb-4 flex items-center justify-between rounded-xl bg-[#1b2a42]/80 px-3 py-2 text-sm text-slate-300">
+                    <span>Need to earn</span>
+                    <span className="font-black text-[#4ef2a6]">+{formatCurrency(currentMilestone.profit)}</span>
                   </div>
 
                   <button
                     onClick={markTradeComplete}
                     disabled={saving}
-                    className="w-full py-3 bg-green-500 hover:bg-green-600 disabled:bg-gray-600 text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-2"
+                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#30c95b] py-3 text-lg font-black text-white shadow-lg shadow-green-600/30 transition hover:bg-[#28b851] disabled:opacity-75"
                   >
                     {saving ? (
                       <>
@@ -219,7 +209,7 @@ export default function GoalModal({ isOpen, onClose, futuresAccount }) {
                       </>
                     ) : (
                       <>
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                         </svg>
                         Mark Trade #{currentMilestone.trade} Complete
@@ -228,8 +218,7 @@ export default function GoalModal({ isOpen, onClose, futuresAccount }) {
                   </button>
                 </div>
 
-                {/* Summary */}
-                <div className="flex justify-between text-xs text-gray-500 px-1">
+                <div className="flex justify-between px-1 text-[0.72rem] font-medium text-slate-400">
                   <span>{completedTrades.length} trades completed</span>
                   <span>Target: {formatCurrency(targetAmount)}</span>
                 </div>

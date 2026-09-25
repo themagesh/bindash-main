@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f7f4ed;
+  --foreground: #1d2433;
 }
 
 @theme inline {
@@ -12,20 +12,166 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
+  margin: 0;
+  background: linear-gradient(180deg, #f7f6f2 0%, #f6f0fd 100%);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Segoe UI", Arial, Helvetica, sans-serif;
 }
 
-/* Shimmer animation for progress bar */
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+.dashboard-shell {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(255, 213, 90, 0.18), transparent 22%),
+    radial-gradient(circle at top right, rgba(194, 141, 255, 0.16), transparent 20%),
+    linear-gradient(180deg, #f7f4ed 0%, #f8f1ff 100%);
+  position: relative;
+}
+
+.dashboard-shell::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image: radial-gradient(rgba(120, 116, 145, 0.08) 0.7px, transparent 0.8px);
+  background-size: 16px 16px;
+}
+
+.cute-brand {
+  font-family: "Segoe Print", "Bradley Hand", "Comic Sans MS", cursive;
+  letter-spacing: -0.06em;
+}
+
+.nav-cute {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(234, 176, 220, 0.7);
+  box-shadow: 0 12px 30px rgba(160, 126, 186, 0.12);
+  backdrop-filter: blur(12px);
+}
+
+.nav-pill {
+  border-radius: 9999px;
+  padding: 0.6rem 1rem;
+  font-size: 0.82rem;
+  font-weight: 800;
+  line-height: 1;
+  transition: all 0.2s ease;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+}
+
+.nav-pill--active {
+  background: linear-gradient(135deg, #f7a8d7 0%, #f48ac7 35%, #c293ff 100%);
+  color: white;
+  box-shadow: 0 8px 18px rgba(244, 131, 200, 0.35);
+}
+
+.nav-pill--ghost {
+  background: #f9ebff;
+  color: #60426d;
+}
+
+.dashboard-surface {
+  position: relative;
+  z-index: 1;
+}
+
+.cute-card {
+  position: relative;
+  border-radius: 1.6rem;
+  border: 1px solid rgba(125, 116, 136, 0.12);
+  box-shadow: 0 12px 24px rgba(116, 92, 150, 0.08);
+  overflow: hidden;
+}
+
+.cute-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(255,255,255,0.24), rgba(255,255,255,0));
+}
+
+.metric-card {
+  position: relative;
+  border-radius: 1.5rem;
+  padding: 1rem;
+  border: 1px solid rgba(137, 112, 156, 0.12);
+  box-shadow: 0 12px 24px rgba(135, 118, 170, 0.08);
+  overflow: hidden;
+}
+
+.metric-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 110%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0));
+  pointer-events: none;
+}
+
+.card-soft-yellow {
+  background: linear-gradient(135deg, #f8eb9a 0%, #f7d86a 100%);
+}
+
+.card-soft-blue {
+  background: linear-gradient(135deg, #c7ecff 0%, #b2d9ff 100%);
+}
+
+.card-soft-violet {
+  background: linear-gradient(135deg, #e4d3ff 0%, #d0c3ff 100%);
+}
+
+.card-soft-pink {
+  background: linear-gradient(135deg, #f7d0e7 0%, #efbfd9 100%);
+}
+
+.card-soft-mint {
+  background: linear-gradient(135deg, #d9f8e6 0%, #baeec9 100%);
+}
+
+.card-soft-cream {
+  background: linear-gradient(135deg, #fef9eb 0%, #f7eec8 100%);
+}
+
+.section-title {
+  color: #2d2d2d;
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}
+
+.score-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  border-radius: 9999px;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.money-value {
+  font-weight: 900;
+  letter-spacing: -0.05em;
+}
+
 @keyframes shimmer {
   0% {
     transform: translateX(-100%);
@@ -39,7 +185,6 @@ body {
   animation: shimmer 2s infinite;
 }
 
-/* Fade in animation for mobile menu */
 @keyframes fadeIn {
   from {
     opacity: 0;

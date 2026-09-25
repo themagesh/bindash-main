@@ -77,10 +77,10 @@ export default function DashboardLayout({ children }) {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="dashboard-shell min-h-screen">
       <Navbar progressData={progressData} />
-      
-      <main>
+
+      <main className="relative z-10">
         {children}
       </main>
     </div>
