@@ -388,11 +388,26 @@ export async function getFuturesAccount() {
 // Get futures positions
 export async function getFuturesPositions() {
   try {
+    // Binance now recommends /fapi/v3/positionRisk; fall back to v2 for older
+    // accounts. v2 can return an empty/partial list on some account types.
+    const fetchPositionRisk = async () => {
+      try {
+        return await futuresAuthenticatedRequest('/fapi/v3/positionRisk');
+      } catch (v3Error) {
+        console.warn('[FuturesPositions] v3 positionRisk failed, falling back to v2:', v3Error.message);
+        return await futuresAuthenticatedRequest('/fapi/v2/positionRisk');
+      }
+    };
+
     const [positions, openOrders] = await Promise.all([
-      futuresAuthenticatedRequest('/fapi/v2/positionRisk'),
+      fetchPositionRisk(),
       futuresAuthenticatedRequest('/fapi/v1/openOrders')
     ]);
-    
+
+    // Debug: log how many positions came back and their raw amounts
+    console.log('[FuturesPositions] positionRisk count:', Array.isArray(positions) ? positions.length : 'not-array',
+      'nonZero:', Array.isArray(positions) ? positions.filter(p => parseFloat(p.positionAmt) !== 0).length : 0);
+
     // Debug: log all open order types to diagnose SL/TP detection
     console.log('[FuturesPositions] openOrders raw:', JSON.stringify(openOrders.map(o => ({
       symbol: o.symbol, type: o.type, side: o.side, stopPrice: o.stopPrice, price: o.price, positionSide: o.positionSide
@@ -592,15 +607,16 @@ export function calculateFuturesRiskMetrics(positions, account) {
   else riskLevel = 'Low';
 
   return {
-    totalPnL: totalPnL.toFixed(2),
-    totalPnLPercent: totalPnLPercent.toFixed(2),
+    // Keep these as numbers so consumers can safely call Number math / .toFixed().
+    totalPnL: Number(totalPnL.toFixed(2)),
+    totalPnLPercent: Number(totalPnLPercent.toFixed(2)),
     maxLeverage,
-    avgLeverage: avgLeverage.toFixed(1),
-    marginUsage: marginUsage.toFixed(1),
+    avgLeverage: Number(avgLeverage.toFixed(1)),
+    marginUsage: Number(marginUsage.toFixed(1)),
     positionCount: positions.length,
-    longExposure: longExposure.toFixed(2),
-    shortExposure: shortExposure.toFixed(2),
-    totalNotional: totalNotional.toFixed(2),
+    longExposure: Number(longExposure.toFixed(2)),
+    shortExposure: Number(shortExposure.toFixed(2)),
+    totalNotional: Number(totalNotional.toFixed(2)),
     riskLevel,
   };
 }

@@ -32,6 +32,7 @@ import { useState, useEffect } from 'react';
 import { useFetch, formatCurrency } from '@/lib/utils';
 import { useTheme } from '@/components/ThemeContext';
 import LoadingSpinner from '@/components/LoadingSpinner';
+import ErrorBoundary from '@/components/ErrorBoundary';
 import FuturesPositions from '@/components/FuturesPositions';
 import PositionCharts from '@/components/PositionCharts';
 import GoalModal from '@/components/GoalModal';
@@ -113,28 +114,28 @@ export default function FuturesPage() {
   const stats = [
     {
       title: 'Unrealized PnL',
-      value: `${pnl >= 0 ? '+' : '-'}$${Math.abs(pnl || 0).toFixed(2)}`,
-      sub: `${(futuresRiskMetrics?.totalPnLPercent || 0).toFixed(1)}%`,
+      value: `${pnl >= 0 ? '+' : '-'}$${Math.abs(Number(pnl) || 0).toFixed(2)}`,
+      sub: `${(Number(futuresRiskMetrics?.totalPnLPercent) || 0).toFixed(1)}%`,
       icon: <TrendingDown size={16} />,
       tone: 'pink',
     },
     {
       title: 'Wallet Balance',
-      value: `$${walletBalance.toFixed(2)}`,
-      sub: `Available: $${availableBalance.toFixed(2)}`,
+      value: `$${(Number(walletBalance) || 0).toFixed(2)}`,
+      sub: `Available: $${(Number(availableBalance) || 0).toFixed(2)}`,
       icon: <Wallet size={16} />,
       tone: 'blue',
     },
     {
       title: 'If All SL Hit',
-      value: `$${((walletBalance || 0) + (futuresRiskMetrics?.totalPnL || 0) || 0).toFixed(2)}`,
+      value: `$${((Number(walletBalance) || 0) + (Number(futuresRiskMetrics?.totalPnL) || 0)).toFixed(2)}`,
       sub: 'Loss: $0',
       icon: <ShieldCheck size={16} />,
       tone: 'yellow',
     },
     {
       title: 'Maint. Margin',
-      value: `$${(futuresAccount?.totalMaintMargin || 0).toFixed(2)}`,
+      value: `$${(Number(futuresAccount?.totalMaintMargin) || 0).toFixed(2)}`,
       sub: '1.7% of balance',
       icon: <Gauge size={16} />,
       tone: 'green',
@@ -142,20 +143,20 @@ export default function FuturesPage() {
     {
       title: 'Open Positions',
       value: String(futuresPositions?.length || 0),
-      sub: `USDT: $${(futuresRiskMetrics?.totalNotional || 0).toFixed(0)}`,
+      sub: `USDT: $${(Number(futuresRiskMetrics?.totalNotional) || 0).toFixed(0)}`,
       icon: <BriefcaseBusiness size={16} />,
       tone: 'purple',
     },
     {
       title: 'Long',
-      value: `$${(futuresRiskMetrics?.longExposure || 0).toFixed(0)}`,
+      value: `$${(Number(futuresRiskMetrics?.longExposure) || 0).toFixed(0)}`,
       sub: 'USDT Long',
       icon: <TrendingUp size={16} />,
       tone: 'cyan',
     },
     {
       title: 'Short',
-      value: `$${(futuresRiskMetrics?.shortExposure || 0).toFixed(0)}`,
+      value: `$${(Number(futuresRiskMetrics?.shortExposure) || 0).toFixed(0)}`,
       sub: 'USDT Short',
       icon: <TrendingDown size={16} />,
       tone: 'orange',
@@ -264,15 +265,19 @@ export default function FuturesPage() {
           </button>
         </div>
 
-        <FuturesPositions
-          positions={futuresPositions || []}
-          pendingOrders={pendingOrdersData || []}
-          onRefresh={refetchFutures}
-        />
+        <ErrorBoundary label="Open Positions">
+          <FuturesPositions
+            positions={futuresPositions || []}
+            pendingOrders={pendingOrdersData || []}
+            onRefresh={refetchFutures}
+          />
+        </ErrorBoundary>
       </section>
 
       {futuresPositions?.length > 0 && (
-        <PositionCharts positions={futuresPositions} />
+        <ErrorBoundary label="Position Charts">
+          <PositionCharts positions={futuresPositions} />
+        </ErrorBoundary>
       )}
 
       <footer className="footer">

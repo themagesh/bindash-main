@@ -14,7 +14,11 @@ export default class ErrorBoundary extends Component {
 
   componentDidCatch(error, info) {
     // Surface details in the browser console for debugging
-    console.error('Dashboard error boundary caught:', error, info);
+    console.error(
+      `Dashboard error boundary [${this.props.label || 'root'}] caught:`,
+      error,
+      info?.componentStack,
+    );
   }
 
   handleReset = () => {
@@ -40,16 +44,16 @@ export default class ErrorBoundary extends Component {
             <h2 style={{ margin: '0 0 8px', color: '#d64053', fontSize: '1.25rem', fontWeight: 800 }}>
               Something went wrong
             </h2>
-            <p style={{ margin: '0 0 16px', fontSize: '0.9rem' }}>
-              A section of the dashboard failed to render. The rest of the app is still fine.
+            <p style={{ margin: '0 0 12px', fontSize: '0.9rem' }}>
+              {this.props.label ? `Section "${this.props.label}" failed to render.` : 'A section of the dashboard failed to render.'} The rest of the app is still fine.
             </p>
-            {this.state.error?.message && (
+            {this.state.error && (
               <pre
                 style={{
                   textAlign: 'left',
                   whiteSpace: 'pre-wrap',
                   wordBreak: 'break-word',
-                  fontSize: '0.75rem',
+                  fontSize: '0.72rem',
                   background: '#faf3f5',
                   border: '1px solid #f0d4dd',
                   borderRadius: 12,
@@ -58,7 +62,8 @@ export default class ErrorBoundary extends Component {
                   marginBottom: 16,
                 }}
               >
-                {String(this.state.error.message)}
+                {String(this.state.error.name || 'Error')}: {String(this.state.error.message || this.state.error)}
+                {this.state.error.stack ? '\n\n' + String(this.state.error.stack).split('\n').slice(0, 4).join('\n') : ''}
               </pre>
             )}
             <button
