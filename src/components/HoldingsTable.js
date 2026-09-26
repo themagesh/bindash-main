@@ -23,7 +23,7 @@ export default function HoldingsTable({ holdings }) {
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-xs font-bold">
-                  {holding.currency.slice(0, 2)}
+                  {String(holding.currency || '').slice(0, 2)}
                 </div>
                 <span className="font-medium text-white">{holding.currency}</span>
               </div>
@@ -85,7 +85,7 @@ export default function HoldingsTable({ holdings }) {
                 <td className="py-4 px-4">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-xs font-bold">
-                      {holding.currency.slice(0, 2)}
+                      {String(holding.currency || '').slice(0, 2)}
                     </div>
                     <span className="font-medium text-white">{holding.currency}</span>
                   </div>

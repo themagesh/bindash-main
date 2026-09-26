@@ -287,7 +287,7 @@ export default function FuturesPositions({ positions, onRefresh, pendingOrders =
                 <td className="border-l border-gray-700 py-4 px-4 text-shadow-lg/30">
                   <div className="flex items-center gap-2 ">
                     <div className={`w-2 h-2 rounded-full ${position.side === 'LONG' ? 'bg-green-500' : 'bg-red-500'}`} />
-                    <span className="font-medium text-yellow-400 text-lg">{position.symbol.replace(/USDT$/, '')}</span>
+                    <span className="font-medium text-yellow-400 text-lg">{String(position.symbol || '').replace(/USDT$/, '')}</span>
                   </div>
                 </td>
                 <td className={`text-lg border-l border-gray-700 py-4 px-4 text-right font-bold font-medium font-mono text-shadow-2xs text-shadow-gray-600 ${getChangeColor(position.unrealizedProfit)}`}> 

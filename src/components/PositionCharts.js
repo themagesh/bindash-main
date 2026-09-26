@@ -70,7 +70,7 @@ export default function PositionCharts({ positions = [] }) {
     return null;
   }
 
-  const symbols = [...new Set(positions.map(p => p.symbol))];
+  const symbols = [...new Set(positions.map(p => p?.symbol).filter(Boolean))];
   const currentLabel = timeIntervals.find(t => t.value === selectedInterval)?.label || '15m';
 
   return (
@@ -107,7 +107,7 @@ export default function PositionCharts({ positions = [] }) {
             <div className="flex items-center justify-between border-b border-gray-700 bg-[#171c22] px-3 py-2.5">
               <div className="flex items-center gap-2">
                 <span className="h-2.5 w-2.5 rounded-full bg-[#00d4ff] shadow-[0_0_14px_rgba(0,212,255,0.9)]" />
-                <span className="text-sm font-semibold text-white">{symbol.replace('USDT', '')}</span>
+                <span className="text-sm font-semibold text-white">{String(symbol || '').replace('USDT', '')}</span>
               </div>
 
               <div className="flex items-center gap-2">

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
+import ErrorBoundary from '@/components/ErrorBoundary';
 import { ThemeProvider, useTheme } from '@/components/ThemeContext';
 
 function DashboardShell({ children, progressData }) {
@@ -14,7 +15,7 @@ function DashboardShell({ children, progressData }) {
         <Navbar progressData={progressData} />
       </div>
       <main className="relative z-10">
-        {children}
+        <ErrorBoundary>{children}</ErrorBoundary>
       </main>
     </div>
   );
