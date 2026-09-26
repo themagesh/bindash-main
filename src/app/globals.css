@@ -284,13 +284,36 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: linear-gradient(135deg, #fdefa0 0%, #f5d766 100%);
-  border: 2.5px solid rgba(140, 110, 50, 0.4);
+  background:
+    radial-gradient(circle at 18% 30%, rgba(255, 255, 255, 0.35), transparent 40%),
+    linear-gradient(120deg, #dcf85f 0%, #c3ee3f 45%, #a8e22a 100%);
+  border: 2.5px solid rgba(120, 160, 30, 0.45);
   border-radius: var(--wobble-2);
   padding: 22px 26px;
   min-height: 184px;
-  box-shadow: 6px 8px 0 rgba(200, 170, 90, 0.22), 0 14px 22px rgba(173, 145, 72, 0.14);
+  box-shadow: 6px 8px 0 rgba(150, 190, 60, 0.28), 0 14px 22px rgba(140, 175, 50, 0.18);
   overflow: hidden;
+}
+
+/* soft brushstroke highlight behind the balance text */
+.balance-card::after {
+  content: "";
+  position: absolute;
+  left: 4%;
+  top: 26%;
+  width: 62%;
+  height: 48%;
+  background: linear-gradient(100deg, rgba(232, 255, 140, 0.85), rgba(200, 245, 90, 0.15));
+  border-radius: 60% 40% 55% 45% / 55% 50% 50% 45%;
+  transform: rotate(-3deg);
+  filter: blur(2px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.balance-card > * {
+  position: relative;
+  z-index: 1;
 }
 
 .balance-card::before {
@@ -299,15 +322,17 @@ textarea {
   top: -8px;
   right: 30%;
   font-size: 1.4rem;
-  color: rgba(180, 140, 60, 0.35);
+  color: rgba(110, 150, 30, 0.4);
   transform: rotate(12deg);
+  z-index: 1;
 }
 
 .sparkle {
   position: absolute;
   font-size: 1.1rem;
-  opacity: 0.65;
-  color: rgba(150, 115, 55, 0.75);
+  opacity: 0.7;
+  color: rgba(95, 135, 25, 0.8);
+  z-index: 1;
 }
 
 .sparkle-one {
@@ -336,7 +361,12 @@ textarea {
   line-height: 0.92;
   font-weight: 900;
   letter-spacing: -0.06em;
-  color: #1b1f27;
+  color: #17301a;
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.balance-card .eyebrow {
+  color: rgba(30, 55, 20, 0.85);
 }
 
 .loss-chip {
@@ -346,11 +376,12 @@ textarea {
   margin-top: 14px;
   padding: 7px 14px;
   border-radius: var(--wobble-pill);
-  background: rgba(255, 255, 255, 0.55);
-  border: 2px solid rgba(214, 64, 83, 0.3);
-  color: #d64053;
+  background: rgba(255, 255, 255, 0.82);
+  border: 2px solid rgba(214, 64, 83, 0.35);
+  color: #d63a4e;
   font-weight: 800;
   font-size: 0.82rem;
+  box-shadow: 2px 2px 0 rgba(150, 190, 60, 0.25);
 }
 
 .goal-box {
@@ -361,9 +392,9 @@ textarea {
   justify-content: center;
   min-width: 250px;
   height: 100%;
-  border-left: 2.5px dashed rgba(120, 90, 40, 0.35);
+  border-left: 2.5px dashed rgba(95, 135, 30, 0.4);
   padding-left: 26px;
-  color: #1f2433;
+  color: #1c3320;
   cursor: pointer;
 }
 
@@ -1175,7 +1206,7 @@ textarea {
     width: 100%;
     justify-content: flex-start;
     border-left: none;
-    border-top: 2.5px dashed rgba(120, 90, 40, 0.35);
+    border-top: 2.5px dashed rgba(95, 135, 30, 0.4);
     padding-left: 0;
     padding-top: 18px;
   }
