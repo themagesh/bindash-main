@@ -67,7 +67,7 @@ export default function FuturesPositions({ positions, onRefresh, pendingOrders =
   }
 
   // Sort positions by total USDT size (desc)
-  const sortedPositions = [...positions].sort((a, b) => {
+  const sortedPositions = [...(positions || [])].sort((a, b) => {
     const aSize = Math.abs(a.positionAmt * a.entryPrice);
     const bSize = Math.abs(b.positionAmt * b.entryPrice);
     return bSize - aSize;
