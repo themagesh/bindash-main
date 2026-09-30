@@ -363,10 +363,45 @@ textarea {
   letter-spacing: -0.06em;
   color: #17301a;
   text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.35);
+  transition: color 0.25s ease;
+}
+
+/* Positive balance = green, negative = red */
+.balance.balance-up {
+  color: #0f7a42;
+}
+
+.balance.balance-down {
+  color: #d02f4c;
 }
 
 .balance-card .eyebrow {
   color: rgba(30, 55, 20, 0.85);
+}
+
+/* PnL chip switches color + border by sign */
+.pnl-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+  padding: 7px 14px;
+  border-radius: var(--wobble-pill);
+  background: rgba(255, 255, 255, 0.82);
+  font-weight: 800;
+  font-size: 0.82rem;
+  box-shadow: 2px 2px 0 rgba(150, 190, 60, 0.25);
+  transition: color 0.25s ease, border-color 0.25s ease;
+}
+
+.pnl-chip--up {
+  border: 2px solid rgba(15, 122, 66, 0.45);
+  color: #0f7a42;
+}
+
+.pnl-chip--down {
+  border: 2px solid rgba(208, 47, 76, 0.45);
+  color: #d02f4c;
 }
 
 .loss-chip {
@@ -575,7 +610,7 @@ textarea {
 
 .metrics-grid {
   display: grid;
-  grid-template-columns: repeat(8, minmax(0, 1fr));
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 14px;
 }
 
@@ -921,6 +956,42 @@ textarea {
 
 .position-pnl.negative b {
   color: #d64053;
+}
+
+/* ---------------- Open Positions (Sweety pastel skin) ---------------- */
+
+/* Mobile position card */
+.sweety-pos-card {
+  background: linear-gradient(135deg, #fff6fb 0%, #fdeef7 100%);
+  border: 2px solid rgba(120, 90, 140, 0.16);
+  box-shadow: 3px 4px 0 rgba(180, 140, 200, 0.14);
+}
+
+/* Recolor the dark-theme utility text inside the positions views to fit light theme.
+   Semantic green and red profit/loss colors are left untouched. */
+.sweety-pos-card .text-white,
+.sweety-pos-table .text-white {
+  color: #26232e !important;
+}
+
+.sweety-pos-card .text-gray-300,
+.sweety-pos-card .text-gray-400,
+.sweety-pos-table .text-gray-300,
+.sweety-pos-table .text-gray-400 {
+  color: #7b6d80 !important;
+}
+
+/* Symbol accent was yellow-on-dark; use the Sweety pink instead */
+.sweety-pos-table .text-yellow-400 {
+  color: #d1418b !important;
+}
+
+.sweety-pos-table .text-orange-200 {
+  color: #c07a2a !important;
+}
+
+.sweety-pos-table .text-blue-400 {
+  color: #4f7ec8 !important;
 }
 
 /* ---------------- Footer ---------------- */

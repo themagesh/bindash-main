@@ -83,7 +83,7 @@ export default function FuturesPositions({ positions, onRefresh, pendingOrders =
           return (
             <div 
               key={`mobile-${position.symbol}-${index}`}
-              className="bg-gray-800 rounded-lg p-4 border border-gray-700"
+              className="sweety-pos-card rounded-2xl p-4"
             >
               <div className="flex justify-between items-start mb-3">
                 <div className="flex items-center gap-2 flex-wrap">
@@ -208,28 +208,28 @@ export default function FuturesPositions({ positions, onRefresh, pendingOrders =
       </div>
 
       {/* Desktop Table View */}
-      <div className="hidden md:block overflow-x-auto">
+      <div className="hidden md:block overflow-x-auto sweety-pos-table">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-gray-700">
-              <th className="text-right py-3 px-4 text-gray-400 font-medium text-sm">Entry Price</th>
-              <th className="text-right py-3 px-4 text-gray-400 font-medium text-sm">Mark Price</th>
-              <th className="text-right py-3 px-4 text-gray-400 font-medium text-sm">Target</th>
-              <th className="text-right py-3 px-4 text-gray-400 font-medium text-sm">Stop Loss</th>
-              <th className="text-right py-3 px-4 text-gray-400 font-medium text-sm">Liq. Price</th>
-              <th className="text-center py-3 px-4 text-gray-400 font-medium text-sm">Leverage</th>
-              <th className="border-l border-gray-700 text-left py-3 px-4 text-gray-400 font-medium text-sm">Symbol</th>
-              <th className=" text-right py-3 px-4 text-gray-400 font-medium text-sm">PnL</th>
-              <th className=" text-right py-3 px-4 text-gray-400 font-medium text-sm">PnL (INR)</th>
-              <th className=" text-right py-3 px-4 text-gray-400 font-medium text-sm">USDT</th>
-              <th className="text-center py-3 px-2 text-gray-400 font-medium text-sm"></th>
+            <tr className="border-b border-[rgba(70,56,88,0.18)]">
+              <th className="text-right py-3 px-4 text-[#7b6d80] font-bold text-sm">Entry Price</th>
+              <th className="text-right py-3 px-4 text-[#7b6d80] font-bold text-sm">Mark Price</th>
+              <th className="text-right py-3 px-4 text-[#7b6d80] font-bold text-sm">Target</th>
+              <th className="text-right py-3 px-4 text-[#7b6d80] font-bold text-sm">Stop Loss</th>
+              <th className="text-right py-3 px-4 text-[#7b6d80] font-bold text-sm">Liq. Price</th>
+              <th className="text-center py-3 px-4 text-[#7b6d80] font-bold text-sm">Leverage</th>
+              <th className="border-l border-[rgba(70,56,88,0.14)] text-left py-3 px-4 text-[#7b6d80] font-bold text-sm">Symbol</th>
+              <th className=" text-right py-3 px-4 text-[#7b6d80] font-bold text-sm">PnL</th>
+              <th className=" text-right py-3 px-4 text-[#7b6d80] font-bold text-sm">PnL (INR)</th>
+              <th className=" text-right py-3 px-4 text-[#7b6d80] font-bold text-sm">USDT</th>
+              <th className="text-center py-3 px-2 text-[#7b6d80] font-bold text-sm"></th>
             </tr>
           </thead>
           <tbody>
             {sortedPositions.map((position, index) => (
               <tr 
                 key={`${position.symbol}-${index}`}
-                className="border-b border-gray-800 hover:bg-gray-800/50 transition-colors"
+                className="border-b border-[rgba(70,56,88,0.1)] hover:bg-[rgba(247,155,200,0.08)] transition-colors"
               >
                 <td className="py-4 px-4 text-right text-gray-300">
                   {formatCurrency(position.entryPrice, 4).replace('$', '')}

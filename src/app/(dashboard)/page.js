@@ -2,8 +2,8 @@
 'use client';
 
 import {
-  Activity,
   ArrowDown,
+  ArrowUp,
   BarChart3,
   BriefcaseBusiness,
   ChevronRight,
@@ -47,28 +47,6 @@ function MetricCard({ title, value, sub, icon, tone }) {
       </div>
       <div className="metric-value">{value}</div>
       {sub && <div className="metric-sub">{sub}</div>}
-    </div>
-  );
-}
-
-function RsiCard({ timeframe, value, tone }) {
-  const angle = -75 + (value / 100) * 150;
-
-  return (
-    <div className={`rsi-card ${tone}`}>
-      <div className="rsi-title">
-        <Activity size={16} />
-        BTC RSI {timeframe}
-      </div>
-      <div className="gauge">
-        <div className="gauge-arc" />
-        <div className="gauge-needle" style={{ transform: `rotate(${angle}deg)` }}>
-          <span />
-        </div>
-        <div className="gauge-center" />
-      </div>
-      <div className="rsi-value">{value}</div>
-      <div className="rsi-label">Neutral</div>
     </div>
   );
 }
@@ -173,9 +151,11 @@ export default function FuturesPage() {
           <span className="sparkle sparkle-two">✦</span>
           <div>
             <div className="eyebrow">CURRENT BALANCE</div>
-            <div className="balance">{formatCurrency(currentBalance, 2)}</div>
-            <div className="loss-chip">
-              <ArrowDown size={15} />
+            <div className={`balance ${pnl >= 0 ? 'balance-up' : 'balance-down'}`}>
+              {formatCurrency(currentBalance, 2)}
+            </div>
+            <div className={`pnl-chip ${pnl >= 0 ? 'pnl-chip--up' : 'pnl-chip--down'}`}>
+              {pnl >= 0 ? <ArrowUp size={15} /> : <ArrowDown size={15} />}
               {pnl >= 0 ? '+' : '-'}{formatCurrency(Math.abs(pnl), 2)} unrealized
             </div>
           </div>
@@ -249,9 +229,6 @@ export default function FuturesPage() {
         {stats.map((item) => (
           <MetricCard key={item.title} {...item} />
         ))}
-
-        <RsiCard timeframe="1H" value={47} tone="lavender" />
-        <RsiCard timeframe="4H" value={35} tone="mint" />
       </section>
 
       <section className="positions">

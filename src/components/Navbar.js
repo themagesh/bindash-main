@@ -12,14 +12,12 @@ import {
   Sun,
   Target,
   TrendingUp,
-  CircleDollarSign,
   X,
 } from 'lucide-react';
 import { useTheme } from '@/components/ThemeContext';
 
 const NAV_ITEMS = [
   { href: '/', label: 'Futures', icon: TrendingUp },
-  { href: '/spot', label: 'Spot', icon: CircleDollarSign },
   { href: '/compound', label: 'Goal', icon: Target },
   { href: '/trades', label: 'History', icon: History },
 ];
