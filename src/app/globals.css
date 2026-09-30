@@ -720,6 +720,15 @@ textarea {
   line-height: 1.1;
 }
 
+/* Positive / negative value coloring (PnL card + metric cards) */
+.value-up {
+  color: #0f9d58 !important;
+}
+
+.value-down {
+  color: #e0304e !important;
+}
+
 .metric-sub {
   margin-top: 8px;
   font-size: 0.76rem;

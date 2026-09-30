@@ -37,7 +37,8 @@ import FuturesPositions from '@/components/FuturesPositions';
 import PositionCharts from '@/components/PositionCharts';
 import GoalModal from '@/components/GoalModal';
 
-function MetricCard({ title, value, sub, icon, tone }) {
+function MetricCard({ title, value, sub, icon, tone, trend }) {
+  const trendClass = trend === 'up' ? 'value-up' : trend === 'down' ? 'value-down' : '';
   return (
     <div className={`metric-card ${tone}`}>
       <div className="card-decoration">✧</div>
@@ -45,7 +46,7 @@ function MetricCard({ title, value, sub, icon, tone }) {
         <span className="metric-icon">{icon}</span>
         <span>{title}</span>
       </div>
-      <div className="metric-value">{value}</div>
+      <div className={`metric-value ${trendClass}`}>{value}</div>
       {sub && <div className="metric-sub">{sub}</div>}
     </div>
   );
@@ -94,8 +95,9 @@ export default function FuturesPage() {
       title: 'Unrealized PnL',
       value: `${pnl >= 0 ? '+' : '-'}$${Math.abs(Number(pnl) || 0).toFixed(2)}`,
       sub: `${(Number(futuresRiskMetrics?.totalPnLPercent) || 0).toFixed(1)}%`,
-      icon: <TrendingDown size={16} />,
+      icon: pnl >= 0 ? <TrendingUp size={16} /> : <TrendingDown size={16} />,
       tone: 'pink',
+      trend: pnl >= 0 ? 'up' : 'down',
     },
     {
       title: 'Wallet Balance',
@@ -190,7 +192,9 @@ export default function FuturesPage() {
           <LineChart size={31} />
           <div>
             <span>PnL</span>
-            <strong>{pnl >= 0 ? '+' : '-'}{formatCurrency(Math.abs(pnl), 2)}</strong>
+            <strong className={pnl >= 0 ? 'value-up' : 'value-down'}>
+              {pnl >= 0 ? '+' : '-'}{formatCurrency(Math.abs(pnl), 2)}
+            </strong>
           </div>
         </div>
       </section>
