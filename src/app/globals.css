@@ -289,8 +289,8 @@ textarea {
     linear-gradient(120deg, #dcf85f 0%, #c3ee3f 45%, #a8e22a 100%);
   border: 2.5px solid rgba(120, 160, 30, 0.45);
   border-radius: var(--wobble-2);
-  padding: 22px 26px;
-  min-height: 184px;
+  padding: 18px 22px;
+  min-height: 150px;
   box-shadow: 6px 8px 0 rgba(150, 190, 60, 0.28), 0 14px 22px rgba(140, 175, 50, 0.18);
   overflow: hidden;
 }
@@ -454,8 +454,8 @@ textarea {
   display: flex;
   align-items: center;
   gap: 12px;
-  min-height: 184px;
-  padding: 18px 18px;
+  min-height: 150px;
+  padding: 16px 16px;
   border-radius: var(--wobble-1);
   border: 2.5px solid rgba(90, 70, 110, 0.28);
   box-shadow: 5px 6px 0 rgba(123, 105, 162, 0.12);
@@ -619,8 +619,8 @@ textarea {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  min-height: 142px;
-  padding: 16px 14px 14px;
+  min-height: 112px;
+  padding: 12px 12px 11px;
   border-radius: var(--wobble-1);
   border: 2.5px solid rgba(90, 70, 110, 0.28);
   box-shadow: 4px 5px 0 rgba(128, 92, 151, 0.12);

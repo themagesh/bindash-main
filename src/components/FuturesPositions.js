@@ -7,26 +7,8 @@ import { formatCurrency, formatCurrencyFull, formatPercent, getChangeColor } fro
 // Accept pendingOrders prop
 export default function FuturesPositions({ positions, onRefresh, pendingOrders = [] }) {
   const [closing, setClosing] = useState(null);
-  const [lockedTrades, setLockedTrades] = useState(() => new Set());
-
-  const toggleTradeLock = (symbol) => {
-    setLockedTrades((prev) => {
-      const next = new Set(prev);
-      if (next.has(symbol)) {
-        next.delete(symbol);
-      } else {
-        next.add(symbol);
-      }
-      return next;
-    });
-  };
 
   const handleForceClose = async (position) => {
-    if (lockedTrades.has(position.symbol)) {
-      alert(`Trade lock is active for ${position.symbol}. Unlock it before closing the position.`);
-      return;
-    }
-
     if (!confirm(`Are you sure you want to force close ${position.symbol} ${position.side} position?`)) {
       return;
     }
@@ -78,8 +60,6 @@ export default function FuturesPositions({ positions, onRefresh, pendingOrders =
       {/* Mobile Card View */}
       <div className="block md:hidden space-y-4">
         {sortedPositions.map((position, index) => {
-          const isLocked = lockedTrades.has(position.symbol);
-
           return (
             <div 
               key={`mobile-${position.symbol}-${index}`}
@@ -103,29 +83,13 @@ export default function FuturesPositions({ positions, onRefresh, pendingOrders =
                   }`}>
                     {position.leverage}x
                   </span>
-                  {isLocked && (
-                    <span className="px-2 py-0.5 rounded text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                      Locked
-                    </span>
-                  )}
                 </div>
                 <div className="flex items-center gap-2">
                   <button
-                    onClick={() => toggleTradeLock(position.symbol)}
-                    className={`px-2 py-1 rounded text-[10px] font-semibold border transition-colors ${
-                      isLocked
-                        ? 'bg-amber-500/20 border-amber-500/40 text-amber-300'
-                        : 'bg-gray-700 border-gray-600 text-gray-200 hover:bg-gray-600'
-                    }`}
-                    title={isLocked ? 'Unlock trade' : 'Lock trade'}
-                  >
-                    {isLocked ? 'Unlock' : 'Lock'}
-                  </button>
-                  <button
                     onClick={() => handleForceClose(position)}
-                    disabled={closing === position.symbol || isLocked}
+                    disabled={closing === position.symbol}
                     className="p-1.5 bg-red-600 hover:bg-red-700 disabled:bg-gray-600 text-white rounded transition-colors"
-                    title={isLocked ? 'Trade locked' : 'Force Close'}
+                    title="Force Close"
                   >
                     {closing === position.symbol ? (
                       <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -314,21 +278,10 @@ export default function FuturesPositions({ positions, onRefresh, pendingOrders =
                 <td className="py-4 px-2 text-center">
                   <div className="flex items-center justify-center gap-2">
                     <button
-                      onClick={() => toggleTradeLock(position.symbol)}
-                      className={`px-2 py-1 rounded text-[10px] font-semibold border transition-colors ${
-                        lockedTrades.has(position.symbol)
-                          ? 'bg-amber-500/20 border-amber-500/40 text-amber-300'
-                          : 'bg-gray-700 border-gray-600 text-gray-200 hover:bg-gray-600'
-                      }`}
-                      title={lockedTrades.has(position.symbol) ? 'Unlock trade' : 'Lock trade'}
-                    >
-                      {lockedTrades.has(position.symbol) ? 'Unlock' : 'Lock'}
-                    </button>
-                    <button
                       onClick={() => handleForceClose(position)}
-                      disabled={closing === position.symbol || lockedTrades.has(position.symbol)}
+                      disabled={closing === position.symbol}
                       className="p-0.4 bg-gray-200 hover:bg-gray-300 disabled:bg-gray-400 text-blue-800 rounded transition-colors border border-gray-400"
-                      title={lockedTrades.has(position.symbol) ? 'Trade locked' : 'Force Close'}
+                      title="Force Close"
                     >
                       {closing === position.symbol ? (
                         <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
